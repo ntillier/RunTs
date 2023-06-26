@@ -1,27 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  --background: #282A36;
+  --foreground: #F8F8F2;
+  --selection: #44475A;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+.contexify {
+  --contexify-menu-bgColor: var(--background);
+  --contexify-separator-color: var(--foreground);
+  --contexify-item-color: var(--foreground);
+  --contexify-activeItem-color: var(--foreground);
+  --contexify-activeItem-bgColor: var(--selection);
+  --contexify-rightSlot-color: var(--foreground);
+  --contexify-activeRightSlot-color: var(--foreground);
+  --contexify-arrow-color: var(--foreground);
+  --contexify-activeArrow-color: var(--foreground);
+
+  border: solid 1px var(--selection);
+}
+* {
+  box-sizing: border-box;
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+@font-face {
+  font-family: 'Proggy';
+  src: url('/fonts/ProggyVector%20Regular.woff');
+}
+
+@font-face {
+  font-family: 'DejaVu';
+  src: url('/fonts/DejaVuSansMono.woff');
+}
+
+.cm-editor {
+  cursor: text !important;
+}
+
+.cm-gutters {
+  cursor: default !important;
+}
+
+.cm-content {
+  font-family: 'DejaVu', Roboto, sans-serif !important;
+}
+
+.cm-selectionBackground {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+div[data-method] {
+  @apply items-center;
+}
+
+::-webkit-scrollbar {
+  @apply w-3;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border: 3px solid rgba(0, 0, 0, 0);
+  background-clip: padding-box;
+  @apply bg-black rounded-full;
 }
