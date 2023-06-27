@@ -64,6 +64,9 @@ function runCode(code: string) {
   if (working || !swcInit) {
     return;
   }
+
+  const logs: SandboxLog[] = [...defaultLogs];
+
   working = true;
   try {
     sendStatus(SandboxStatus.Parsing);
@@ -110,7 +113,7 @@ function runCode(code: string) {
 
     sendStatus(SandboxStatus.Running);
 
-    const logs: SandboxLog[] = [...defaultLogs];
+    
     const promises: Promise<any>[] = [];
     const interpreter = new Interpreter(js, applyFunctions(logs, promises));
 
@@ -131,7 +134,7 @@ function runCode(code: string) {
     // we reset the logs
     postMessage(['logs', logs]);
   } catch (err: any) {
-    postMessage(['logs', [...defaultLogs, { method: 'warn', data: [err.stack] }]])
+    postMessage(['logs', [...logs, { method: 'warn', data: [err.stack] }]])
     sendStatus(SandboxStatus.Idle);
   }
   working = false;

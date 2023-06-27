@@ -25,7 +25,7 @@ export default function applyFunctions(logs: any[], promises: Promise<any>[]) {
     
     interpreter.setProperty(globalObject, 'isNan', interpreter.createNativeFunction(function (val: any) {
       return isNaN(interpreter.pseudoToNative(val));
-    }, false));
+    }, false))
 
     // createPromise(interpreter, globalObject);
     createConsole(logs, interpreter, globalObject);
