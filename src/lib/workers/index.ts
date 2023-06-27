@@ -1,18 +1,29 @@
 import { SandboxStatus, SandboxLog } from "../services/sandbox/util";
 import Interpreter from "../services/interpreter";
-import applyPolyfills from "./polyfills";
+import applyFunctions from "./functions";
 import initSwc, { transformSync } from '@swc/wasm-web';
+import polyfills from '@/lib/workers/polyfills';
+import { SetPolyfill } from "./polyfills/set";
 
 let swcInit = false;
 let working = false;
 
-async function importAndRunSwcOnMount() {
+const defaultLogs = [
+  {
+    method: 'warn',
+    data: ['Async / await functions, Promises, fetch, Set and a majority of the es6 features will not work for now.\n']
+  }
+];
+
+
+async function onMountInit() {
   await initSwc();
+
   swcInit = true;
   postMessage(['ready']);
 }
 
-importAndRunSwcOnMount();
+onMountInit();
 
 
 function sendStatus(status: number) {
@@ -64,12 +75,30 @@ function runCode(code: string) {
           syntax: 'typescript',
           tsx: false,
           decorators: false,
+
         },
         target: 'es5',
-        loose: false
+        loose: false,
       },
       module: {
         type: "es6"
+      },
+      env: {
+        /*include: [
+          "transform-async-to-generator",
+          "transform-regenerator",
+
+          // PROMISES
+          "es.promise",
+          "es.promise.all-settled",
+          "es.promise.any",
+          "es.promise.finally",
+
+          // SET
+          "es.set"
+        ],*/
+        // mode: "usage",
+        // coreJs: "3.31"
       },
       minify: false,
       isModule: true
@@ -77,9 +106,11 @@ function runCode(code: string) {
 
     sendStatus(SandboxStatus.Running);
 
-    const logs: SandboxLog[] = [];
+    const logs: SandboxLog[] = [...defaultLogs];
     const promises: Promise<any>[] = [];
-    const interpreter = new Interpreter(js, applyPolyfills(logs, promises));
+    const interpreter = new Interpreter(js, applyFunctions(logs, promises));
+
+    // interpreter.appendCode(SetPolyfill);
 
     interpreter.REGEXP_MODE = 2;
     interpreter.REGEXP_THREAD_TIMEOUT = 1000;
@@ -95,9 +126,7 @@ function runCode(code: string) {
     // we reset the logs
     postMessage(['logs', logs]);
   } catch (err: any) {
-    if (err.code?.startsWith('BABEL')) {
-      postMessage(['error', err.message])
-    }
+    postMessage(['logs', [...defaultLogs, { method: 'warn', data: ['[ERROR]:', err.stack] }]])
     sendStatus(SandboxStatus.Idle);
   }
   working = false;

@@ -1,18 +1,20 @@
 import Interpreter from "../services/interpreter";
 
-// , 'clear'
-// , 'time', 'timeEnd', 'assert'
+// import CoreSet from 'core-js-pure/actual/set';
+
+
 const logMethods = ['log', 'debug', 'info', 'warn', 'error', 'table'];
 
 const timers = new Map();
 const counts = new Map();
 
-export default function applyPolyfills(logs: any[], promises: Promise<any>[]) {
+export default function applyFunctions(logs: any[], promises: Promise<any>[]) {
   timers.clear();
   counts.clear();
 
   return function (interpreter: Interpreter, globalObject: any) {
 
+    // createPromise(interpreter, globalObject);
     createConsole(logs, interpreter, globalObject);
   }
 }
@@ -87,6 +89,17 @@ function createConsole(logs: any[], interpreter: Interpreter, globalObject: any)
     interpreter.setProperty(console, 'trace', notImplemented('trace'));
   });
 }
+
+/*
+function createPromise (interpreter: Interpreter, globalObject: any) {
+  function Wrapper (callback: any) {
+    callback();
+    // console.log(callback);
+    // console.log(args)
+    // return new Promise(callback);
+  }
+  interpreter.setProperty(globalObject, 'Promise', interpreter.createNativeFunction(Wrapper, true));
+}*/
 
 // NOT WORKING
 function createFetch(interpreter: Interpreter, globalObject: any, promises: Promise<any>[]) {

@@ -6,9 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "generate": "node polyfills.js"
   },
   "dependencies": {
+    "@babel/generator": "^7.22.5",
     "@babel/parser": "^7.22.5",
     "@babel/standalone": "^7.22.5",
     "@codemirror/lang-javascript": "^6.1.9",
@@ -23,6 +25,8 @@
     "@uiw/react-codemirror": "^4.21.2",
     "autoprefixer": "10.4.14",
     "console-feed": "^3.5.0",
+    "core-js-builder": "^3.31.0",
+    "core-js-pure": "^3.31.0",
     "eslint": "8.42.0",
     "eslint-config-next": "13.4.4",
     "js-interpreter": "^4.0.0",
@@ -39,6 +43,7 @@
     "zustand": "^4.3.8"
   },
   "devDependencies": {
+    "@types/babel__generator": "^7.6.4",
     "@types/babel__standalone": "^7.1.4"
   }
 }
