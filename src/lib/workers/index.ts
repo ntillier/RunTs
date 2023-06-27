@@ -2,8 +2,7 @@ import { SandboxStatus, SandboxLog } from "../services/sandbox/util";
 import Interpreter from "../services/interpreter";
 import applyFunctions from "./functions";
 import initSwc, { transformSync } from '@swc/wasm-web';
-import polyfills from '@/lib/workers/polyfills';
-import { SetPolyfill } from "./polyfills/set";
+import { promisePolyfill } from "./polyfills/promise";
 
 let swcInit = false;
 let working = false;
@@ -84,6 +83,9 @@ function runCode(code: string) {
         type: "es6"
       },
       env: {
+        include: [
+          "transform-async-to-generator"
+        ]
         /*include: [
           "transform-async-to-generator",
           "transform-regenerator",
@@ -104,6 +106,8 @@ function runCode(code: string) {
       isModule: true
     }).code;
 
+    console.log('JavaScript\n\n' + js);
+
     sendStatus(SandboxStatus.Running);
 
     const logs: SandboxLog[] = [...defaultLogs];
@@ -111,6 +115,7 @@ function runCode(code: string) {
     const interpreter = new Interpreter(js, applyFunctions(logs, promises));
 
     // interpreter.appendCode(SetPolyfill);
+    interpreter.appendCode(promisePolyfill);
 
     interpreter.REGEXP_MODE = 2;
     interpreter.REGEXP_THREAD_TIMEOUT = 1000;

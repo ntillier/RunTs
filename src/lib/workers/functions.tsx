@@ -27,7 +27,7 @@ export default function applyFunctions(logs: any[], promises: Promise<any>[]) {
       return isNaN(interpreter.pseudoToNative(val));
     }, false));
 
-    createPromise(interpreter, globalObject);
+    // createPromise(interpreter, globalObject);
     createConsole(logs, interpreter, globalObject);
   }
 }
