@@ -1,3 +1,4 @@
+import { resolve } from "path";
 import Interpreter from "../services/interpreter";
 
 // import CoreSet from 'core-js-pure/actual/set';
@@ -20,9 +21,13 @@ export default function applyFunctions(logs: any[], promises: Promise<any>[]) {
 
     interpreter.setProperty(globalObject, 'atob', interpreter.createNativeFunction(function (str: string) {
       return atob(str);
-    }, false))
+    }, false));
+    
+    interpreter.setProperty(globalObject, 'isNan', interpreter.createNativeFunction(function (val: any) {
+      return isNaN(interpreter.pseudoToNative(val));
+    }, false));
 
-    // createPromise(interpreter, globalObject);
+    createPromise(interpreter, globalObject);
     createConsole(logs, interpreter, globalObject);
   }
 }
@@ -98,16 +103,22 @@ function createConsole(logs: any[], interpreter: Interpreter, globalObject: any)
   });
 }
 
-/*
+
 function createPromise (interpreter: Interpreter, globalObject: any) {
-  function Wrapper (callback: any) {
-    callback();
+  function Wrapper (fn: any) {
+    const callback = interpreter.pseudoToNative(fn);
+
+    console.log(callback);
+
+    return new Promise((resolve, reject) => {
+      callback(interpreter.nativeToPseudo(resolve), interpreter.nativeToPseudo(reject))
+    });
     // console.log(callback);
     // console.log(args)
     // return new Promise(callback);
   }
   interpreter.setProperty(globalObject, 'Promise', interpreter.createNativeFunction(Wrapper, true));
-}*/
+}
 
 // NOT WORKING
 function createFetch(interpreter: Interpreter, globalObject: any, promises: Promise<any>[]) {
