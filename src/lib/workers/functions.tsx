@@ -35,7 +35,7 @@ function createConsole(logs: any[], interpreter: Interpreter, globalObject: any)
     interpreter.setProperty(console, i, interpreter.createNativeFunction(function (...args: string[]) {
       logs.push({
         method: i,
-        data: args
+        data: args.map((i) => interpreter.pseudoToNative(i))
       })
     }, false));
 
