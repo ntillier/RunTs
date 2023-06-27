@@ -14,6 +14,14 @@ export default function applyFunctions(logs: any[], promises: Promise<any>[]) {
 
   return function (interpreter: Interpreter, globalObject: any) {
 
+    interpreter.setProperty(globalObject, 'btoa', interpreter.createNativeFunction(function (str: string) {
+      return btoa(str);
+    }, false));
+
+    interpreter.setProperty(globalObject, 'atob', interpreter.createNativeFunction(function (str: string) {
+      return atob(str);
+    }, false))
+
     // createPromise(interpreter, globalObject);
     createConsole(logs, interpreter, globalObject);
   }
