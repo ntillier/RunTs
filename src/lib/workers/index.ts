@@ -126,7 +126,7 @@ function runCode(code: string) {
     // we reset the logs
     postMessage(['logs', logs]);
   } catch (err: any) {
-    postMessage(['logs', [...defaultLogs, { method: 'warn', data: ['[ERROR]:', err.stack] }]])
+    postMessage(['logs', [...defaultLogs, { method: 'warn', data: [err.stack] }]])
     sendStatus(SandboxStatus.Idle);
   }
   working = false;
